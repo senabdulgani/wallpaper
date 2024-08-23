@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:wallpaper/screens/Add/add_wallpaper_view.dart';
-import 'package:wallpaper/screens/Home/home_view.dart';
-import 'package:wallpaper/screens/Settings/settings_view.dart';
+import 'package:wallpaper_manager/screens/Add/add_wallpaper_view.dart';
+import 'package:wallpaper_manager/screens/Home/home_view.dart';
+import 'package:wallpaper_manager/screens/Settings/settings_view.dart';
 
 class NavBarAndPagesView extends StatefulWidget {
   const NavBarAndPagesView({super.key});

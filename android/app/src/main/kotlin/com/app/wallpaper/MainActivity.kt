@@ -1,4 +1,4 @@
-package com.app.wallpaper
+package com.app.wallpaper_manager
 
 import io.flutter.embedding.android.FlutterActivity
 

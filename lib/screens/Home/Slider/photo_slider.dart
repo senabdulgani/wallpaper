@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wallpaper/product/theme/app_colors.dart';
+import 'package:wallpaper_manager/product/theme/app_colors.dart';
 
 class PhotoSlider extends StatefulWidget {
   const PhotoSlider({

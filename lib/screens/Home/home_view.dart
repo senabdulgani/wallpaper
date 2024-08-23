@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:wallpaper/screens/Home/Slider/photo_slider.dart';
+import 'package:wallpaper_manager/screens/Home/Slider/photo_slider.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
@@ -8,7 +8,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('Wallpaper'),
+          title: const Text('wallpaper_manager'),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
