@@ -1,11 +1,11 @@
-import 'dart:typed_data';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:wallpaper_manager/product/theme/app_colors.dart';
+import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
-import 'package:wallpaper_manager/screens/Add/DisplayImage/exported_image_view.dart';
+import 'package:wallpaper_app/product/theme/app_colors.dart';
+import 'package:wallpaper_app/screens/Add/DisplayImage/exported_image_view.dart';
 
 class AddWallpaperView extends StatefulWidget {
   const AddWallpaperView({super.key});
@@ -17,10 +17,6 @@ class AddWallpaperView extends StatefulWidget {
 class _AddWallpaperViewState extends State<AddWallpaperView> {
   final TextEditingController reminderTextController = TextEditingController();
   String reminderText = '';
-
-  String selectedFont = 'Regular';
-
-  List<String> fonts = ['Times New Roman', 'Roboto', 'Regular'];
 
   bool hasText = false;
 
@@ -36,47 +32,60 @@ class _AddWallpaperViewState extends State<AddWallpaperView> {
     "https://images.pexels.com/photos/1366630/pexels-photo-1366630.jpeg"
   ];
 
+  // temporary photo path
+  String temporaryPhotoPath = '';
+
+  bool isLoading = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Re-Design'),
         actions: [
-          GestureDetector(
-            onTap: () async {
-              if (hasText) {
-                final imageBytes = await createImageWithText(
-                  images[selectedImageIndex],
-                  reminderText,
-                );
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => DisplayImageScreen(imageBytes: imageBytes),
+          !isLoading
+              ? GestureDetector(
+                  onTap: () async {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    if (hasText) {
+                      temporaryPhotoPath = await createImageWithText(images[selectedImageIndex], reminderTextController.text);
+
+                      // ignore: use_build_context_synchronously
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => DisplayImageScreen(
+                            temporaryImagePath: temporaryPhotoPath,
+                          ),
+                        ),
+                      );
+                    } else {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => DisplayImageScreen(
+                            temporaryImagePath: images[selectedImageIndex],
+                          ),
+                        ),
+                      );
+                    }
+                    setState(() {
+                      isLoading = false;
+                    });
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    color: Colors.transparent,
+                    child: const Text(
+                      'Export',
+                      style: TextStyle(
+                        fontSize: 17,
+                        color: AppColors.blue,
+                      ),
+                    ),
                   ),
-                );
-              } else {
-                // Eğer metin eklenmemişse, orijinal resmi göster
-                final response = await http.get(Uri.parse(images[selectedImageIndex]));
-                final imageBytes = response.bodyBytes;
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => DisplayImageScreen(imageBytes: imageBytes),
-                  ),
-                );
-              }
-            },
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              color: Colors.transparent,
-              child: const Text(
-                'Export',
-                style: TextStyle(
-                  fontSize: 17,
-                  color: AppColors.blue,
-                ),
-              ),
-            ),
-          ),
+                )
+              : const CircularProgressIndicator(),
         ],
       ),
       body: SingleChildScrollView(
@@ -183,7 +192,7 @@ class _AddWallpaperViewState extends State<AddWallpaperView> {
     );
   }
 
-  Future<Uint8List> createImageWithText(String imageUrl, String text) async {
+  Future<String> createImageWithText(String imageUrl, String text) async {
     // Görüntüyü indir
     final response = await http.get(Uri.parse(imageUrl));
     final bytes = response.bodyBytes;
@@ -207,7 +216,7 @@ class _AddWallpaperViewState extends State<AddWallpaperView> {
         text: text,
         style: const TextStyle(
           color: Colors.white,
-          fontSize: 48,
+          fontSize: 120,
           fontWeight: FontWeight.bold,
         ),
       ),
@@ -236,6 +245,21 @@ class _AddWallpaperViewState extends State<AddWallpaperView> {
     final img = await picture.toImage(size.width.toInt(), size.height.toInt());
     final pngBytes = await img.toByteData(format: ui.ImageByteFormat.png);
 
-    return pngBytes!.buffer.asUint8List();
+    // Geçici dizini al
+    final tempDir = await getApplicationCacheDirectory();
+
+    // Benzersiz bir dosya adı oluştur
+    final fileName = 'wallpaper_${DateTime.now().millisecondsSinceEpoch}.png';
+
+    // Dosya yolunu oluştur
+    final filePath = '${tempDir.path}/$fileName';
+    debugPrint(filePath);
+
+    // Dosyayı kaydet
+    final file = File(filePath);
+    await file.writeAsBytes(pngBytes!.buffer.asUint8List());
+
+    // Dosya yolunu döndür
+    return filePath;
   }
 }

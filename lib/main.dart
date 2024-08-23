@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wallpaper_manager/product/state/theme_provider.dart';
-import 'package:wallpaper_manager/product/theme/app_colors.dart';
-import 'package:wallpaper_manager/screens/navbar_and_pages_view.dart.dart';
+import 'package:wallpaper_app/product/state/theme_provider.dart';
+import 'package:wallpaper_app/product/theme/app_colors.dart';
+import 'package:wallpaper_app/screens/navbar_and_pages_view.dart.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -15,6 +15,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => ThemeProvider(prefs)),
       ],
+      // child: const MaterialApp(home: MyApp()),
       child: const MainApp(),
     ),
   );

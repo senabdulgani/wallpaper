@@ -1,16 +1,15 @@
-import 'dart:typed_data';
-
+import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:gap/gap.dart';
-import 'package:wallpaper/wallpaper.dart';
-import 'package:wallpaper_manager/product/theme/app_colors.dart';
+import 'package:wallpaper_app/product/theme/app_colors.dart';
 
+// ignore: must_be_immutable
 class DisplayImageScreen extends StatefulWidget {
-  final Uint8List imageBytes;
-
-  const DisplayImageScreen({
+  late String temporaryImagePath;
+  DisplayImageScreen({
     super.key,
-    required this.imageBytes,
+    required this.temporaryImagePath,
   });
 
   @override
@@ -25,15 +24,10 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
 
   late Stream<String> progressString;
 
-  late String res;
-
-  bool downloading = false;
+  // late String res;
+  bool isLoading = false;
 
   var result = "Waiting to set wallpaper";
-
-  bool _isDisable = true;
-
-  int nextImageID = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -44,137 +38,87 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            downloading
-                ? imageDownloadDialog()
-                : Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                    child: ClipRRect(
-                      borderRadius: AppColors.borderRadiusAll * 2,
-                      child: Image.memory(widget.imageBytes),
-                    ),
-                  ),
-            const Gap(5),
-            ElevatedButton(
-              onPressed: () async {
-                await downloadImage(context);
-              },
-              style: ElevatedButton.styleFrom(
-                iconColor: AppColors.main,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+              child: ClipRRect(
+                borderRadius: AppColors.borderRadiusAll * 2,
+                child: Image.file(File(widget.temporaryImagePath)),
               ),
-              child: const Text('Set'),
             ),
-            const Gap(25),
-            Column(
-              children: <Widget>[
-                ElevatedButton(
-                  onPressed: _isDisable
-                      ? null
-                      : () async {
-                          await downloadImage(context);
-
-                          var width = MediaQuery.of(context).size.width;
-                          var height = MediaQuery.of(context).size.height;
-
-                          home = await Wallpaper.homeScreen(
-                            options: RequestSizeOptions.resizeFit,
-                            width: width,
-                            location: DownloadLocation.applicationDirectory,
-                            height: height,
-                          );
-                          setState(() {
-                            downloading = false;
-                            home = home;
-                          });
-                          print("Task Done");
+            const Gap(5),
+            isLoading
+                ? const CircularProgressIndicator()
+                : Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: <Widget>[
+                      FloatingActionButton(
+                        heroTag: 'home',
+                        onPressed: () async {
+                          try {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            int location = WallpaperManager.HOME_SCREEN;
+                            await WallpaperManager.setWallpaperFromFile(widget.temporaryImagePath, location);
+                            setState(() {
+                              isLoading = false;
+                            });
+                          } catch (exception) {
+                            // Scaffold Message
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: const Text('Bu bir Snackbar mesajıdır!'),
+                                action: SnackBarAction(
+                                  label: 'Geri Al',
+                                  onPressed: () {
+                                    // Snackbar eylem tıklandığında yapılacaklar
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('Geri alma işlemi yapıldı.')),
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+                          }
                         },
-                  child: Text(home),
-                ),
-                ElevatedButton(
-                  onPressed: _isDisable
-                      ? null
-                      : () async {
-                          await downloadImage(context);
-
-                          lock = await Wallpaper.lockScreen(
-                            location: DownloadLocation.applicationDirectory,
-                          );
-                          setState(() {
-                            downloading = false;
-                            lock = lock;
-                          });
-                          print("Task Done");
+                        child: const Icon(
+                          Icons.home,
+                          color: AppColors.black,
+                        ),
+                      ),
+                      FloatingActionButton(
+                        heroTag: 'lock',
+                        onPressed: () async {
+                          try {
+                            setState(() {
+                              isLoading = true;
+                            });
+                            int location = WallpaperManager.LOCK_SCREEN;
+                            await WallpaperManager.setWallpaperFromFile(
+                              widget.temporaryImagePath,
+                              location,
+                            );
+                            setState(() {
+                              isLoading = false;
+                            });
+                          } catch (exception) {
+                            // Scaffold Message
+                            // ignore: use_build_context_synchronously
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('There is an error!'),
+                              ),
+                            );
+                          }
                         },
-                  child: Text(lock),
-                ),
-                ElevatedButton(
-                  onPressed: _isDisable
-                      ? null
-                      : () async {
-                          await downloadImage(context);
-
-                          both = await Wallpaper.bothScreen(
-                            location: DownloadLocation.applicationDirectory,
-                          );
-                          setState(() {
-                            downloading = false;
-                            both = both;
-                          });
-                          print("Task Done");
-                        },
-                  child: Text(both),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Future<void> downloadImage(BuildContext context) async {
-    progressString = Wallpaper.imageDownloadProgress(
-      '',
-      location: DownloadLocation.applicationDirectory,
-    );
-    progressString.listen((data) {
-      setState(() {
-        res = data;
-        downloading = true;
-      });
-      print("DataReceived: $data");
-    }, onDone: () async {
-      setState(() {
-        downloading = false;
-        _isDisable = false;
-      });
-      print("Task Done");
-    }, onError: (error) {
-      setState(() {
-        downloading = false;
-        _isDisable = true;
-      });
-      print("Some Error");
-    });
-  }
-
-  Widget imageDownloadDialog() {
-    return SizedBox(
-      height: 120.0,
-      width: 200.0,
-      child: Card(
-        color: Colors.black,
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const CircularProgressIndicator(),
-            const SizedBox(height: 20.0),
-            Text(
-              "Downloading File : $res",
-              style: const TextStyle(color: Colors.white),
-            )
+                        child: const Icon(
+                          Icons.lock,
+                          color: AppColors.black,
+                        ),
+                      ),
+                    ],
+                  ),
           ],
         ),
       ),
