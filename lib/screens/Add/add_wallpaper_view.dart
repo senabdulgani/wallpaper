@@ -1,9 +1,15 @@
 import 'dart:io';
+import 'dart:typed_data';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
+import 'package:permission_handler/permission_handler.dart';
+import 'package:provider/provider.dart';
+import 'package:wallpaper_app/product/state/add_image_provider.dart';
 import 'package:wallpaper_app/product/theme/app_colors.dart';
 import 'package:wallpaper_app/screens/Add/DisplayImage/exported_image_view.dart';
 
@@ -34,6 +40,7 @@ class _AddWallpaperViewState extends State<AddWallpaperView> {
 
   // temporary photo path
   String temporaryPhotoPath = '';
+  String? selectedImagePath;
 
   bool isLoading = false;
 
@@ -50,7 +57,10 @@ class _AddWallpaperViewState extends State<AddWallpaperView> {
                       isLoading = true;
                     });
                     if (hasText) {
-                      temporaryPhotoPath = await createImageWithText(images[selectedImageIndex], reminderTextController.text);
+                      temporaryPhotoPath = await createImageWithText(
+                        selectedImagePath ?? images[selectedImageIndex],
+                        reminderTextController.text,
+                      );
 
                       // ignore: use_build_context_synchronously
                       Navigator.of(context).push(
@@ -87,6 +97,16 @@ class _AddWallpaperViewState extends State<AddWallpaperView> {
                 )
               : const CircularProgressIndicator(),
         ],
+        leading: GestureDetector(
+          onTap: () {
+            _pickImage(context);
+          },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            color: Colors.transparent,
+            child: const Icon(Icons.upload),
+          ),
+        ),
       ),
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
@@ -130,10 +150,15 @@ class _AddWallpaperViewState extends State<AddWallpaperView> {
                   width: MediaQuery.of(context).size.width * 0.9,
                   child: ClipRRect(
                     borderRadius: AppColors.borderRadiusAll * 2,
-                    child: Image.network(
-                      images[selectedImageIndex],
-                      fit: BoxFit.cover,
-                    ),
+                    child: selectedImagePath == null
+                        ? Image.network(
+                            images[selectedImageIndex],
+                            fit: BoxFit.cover,
+                          )
+                        : Image.file(
+                            File(selectedImagePath!),
+                            fit: BoxFit.cover,
+                          ),
                   ),
                 ),
                 if (hasText)
@@ -192,25 +217,89 @@ class _AddWallpaperViewState extends State<AddWallpaperView> {
     );
   }
 
-  Future<String> createImageWithText(String imageUrl, String text) async {
-    // Görüntüyü indir
-    final response = await http.get(Uri.parse(imageUrl));
-    final bytes = response.bodyBytes;
+  Future<void> _pickImage(BuildContext context) async {
+    if (!await accessRequest()) return;
+    final picker = ImagePicker();
 
-    // Görüntüyü ui.Image'e dönüştür
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      File image = File(pickedFile.path);
+
+      setState(() {
+        selectedImagePath = image.path;
+      });
+
+      // ignore: use_build_context_synchronously
+      Provider.of<WallpaperProvider>(context, listen: false).addWallpaper(image);
+    }
+  }
+
+  Future<bool> accessRequest() async {
+    // android sürüm 33 den büyük ise photos izni alınmalı yoksa storage izni yeterli
+    final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
+    AndroidDeviceInfo androidDeviceInfo = await deviceInfoPlugin.androidInfo;
+    if (androidDeviceInfo.version.sdkInt >= 33) {
+      await Permission.photos.request();
+      if (await Permission.photos.isGranted == false) {
+        debugPrint('I would be pop dialog for alert message.');
+        return false;
+      }
+
+      if (await Permission.photos.isGranted == false) {
+        if (await Permission.photos.isPermanentlyDenied) {
+          openAppSettings();
+          return false;
+        } else if (!await Permission.photos.isGranted) {
+          return false;
+        }
+      }
+    } else {
+      await Permission.storage.request();
+
+      if (await Permission.storage.isGranted == false) {
+        if (await Permission.storage.isPermanentlyDenied) {
+          openAppSettings();
+
+          return false;
+        } else if (!await Permission.storage.isGranted) {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
+
+  Future<String> createImageWithText(String imagePath, String text) async {
+    // Determine if the imagePath is a URL or a local file path
+
+    // Download or read the image based on its source
+    Uint8List bytes;
+    if (selectedImagePath == null) {
+      // If it's a URL, download the image
+      final response = await http.get(Uri.parse(imagePath));
+      bytes = response.bodyBytes;
+    } else {
+      // If it's a local file, read the image file
+      final file = File(imagePath);
+      bytes = await file.readAsBytes();
+    }
+
+    // Convert the image bytes to a ui.Image
     final codec = await ui.instantiateImageCodec(bytes);
     final frameInfo = await codec.getNextFrame();
     final image = frameInfo.image;
 
-    // Metin eklemek için bir resim oluştur
+    // Create an image with text
     final pictureRecorder = ui.PictureRecorder();
     final canvas = Canvas(pictureRecorder);
     final size = Size(image.width.toDouble(), image.height.toDouble());
 
-    // Arka plan görüntüsünü çiz
+    // Draw the background image
     canvas.drawImage(image, Offset.zero, Paint());
 
-    // Metni hazırla
+    // Prepare the text to draw
     final textPainter = TextPainter(
       text: TextSpan(
         text: text,
@@ -223,9 +312,9 @@ class _AddWallpaperViewState extends State<AddWallpaperView> {
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.center,
     );
-    textPainter.layout(maxWidth: size.width * 0.8); // Metnin maksimum genişliğini sınırla
+    textPainter.layout(maxWidth: size.width * 0.8); // Limit the max width of the text
 
-    // Metin için arka plan kutusu çiz
+    // Draw a background box for the text
     final textBackgroundRect = Rect.fromCenter(
       center: size.center(Offset.zero),
       width: textPainter.width + 40,
@@ -236,30 +325,30 @@ class _AddWallpaperViewState extends State<AddWallpaperView> {
       Paint()..color = Colors.black.withOpacity(0.5),
     );
 
-    // Metni çiz
+    // Draw the text
     final textOffset = size.center(Offset.zero) - Offset(textPainter.width / 2, textPainter.height / 2);
     textPainter.paint(canvas, textOffset);
 
-    // Resmi oluştur
+    // Create the final image
     final picture = pictureRecorder.endRecording();
     final img = await picture.toImage(size.width.toInt(), size.height.toInt());
     final pngBytes = await img.toByteData(format: ui.ImageByteFormat.png);
 
-    // Geçici dizini al
+    // Get the temporary directory
     final tempDir = await getApplicationCacheDirectory();
 
-    // Benzersiz bir dosya adı oluştur
+    // Generate a unique file name
     final fileName = 'wallpaper_${DateTime.now().millisecondsSinceEpoch}.png';
 
-    // Dosya yolunu oluştur
+    // Create the file path
     final filePath = '${tempDir.path}/$fileName';
     debugPrint(filePath);
 
-    // Dosyayı kaydet
+    // Save the file
     final file = File(filePath);
     await file.writeAsBytes(pngBytes!.buffer.asUint8List());
 
-    // Dosya yolunu döndür
+    // Return the file path
     return filePath;
   }
 }
