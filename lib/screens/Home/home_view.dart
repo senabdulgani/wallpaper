@@ -8,7 +8,7 @@ class HomeView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: const Text('wallpaper_app'),
+          title: const Text('Home'),
         ),
         body: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),

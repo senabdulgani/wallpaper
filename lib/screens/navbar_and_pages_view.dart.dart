@@ -41,17 +41,17 @@ class NavBarAndPagesViewState extends State<NavBarAndPagesView> {
             indexProvider = index;
           });
         },
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
+        items: <BottomNavigationBarItem>[
+          const BottomNavigationBarItem(
             icon: Icon(Icons.add_circle_outline),
             label: 'Add',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
+            icon: indexProvider == 1 ? const Icon(Icons.home) : const Icon(Icons.home_outlined),
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings),
+          const BottomNavigationBarItem(
+            icon: Icon(Icons.settings_outlined),
             label: 'Settings',
           ),
         ],
