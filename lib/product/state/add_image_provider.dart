@@ -12,29 +12,4 @@ class WallpaperProvider with ChangeNotifier {
     _wallpapers.add(wallpaper);
     notifyListeners();
   }
-
-  // Belirli bir indeksteki duvar kağıdını silen method
-  void removeWallpaper(int index) {
-    if (index >= 0 && index < _wallpapers.length) {
-      _wallpapers.removeAt(index);
-      notifyListeners();
-    }
-  }
-
-  // Tüm duvar kağıtlarını temizleyen method
-  void clearWallpapers() {
-    _wallpapers.clear();
-    notifyListeners();
-  }
-
-  // Duvar kağıdı sayısını döndüren getter
-  int get wallpaperCount => _wallpapers.length;
-
-  // Belirli bir indeksteki duvar kağıdını döndüren method
-  File? getWallpaperAt(int index) {
-    if (index >= 0 && index < _wallpapers.length) {
-      return _wallpapers[index];
-    }
-    return null;
-  }
 }

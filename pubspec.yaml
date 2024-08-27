@@ -9,16 +9,28 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+
+  # UI
   gap: ^3.0.1
+
+  #state
   provider: ^6.1.2
+
+  #caching
   shared_preferences: ^2.3.2
+  flutter_cache_manager: ^3.4.1
+
+
   image: ^4.2.0
   http: ^1.2.2
   path_provider: ^2.1.4
-  flutter_wallpaper_manager: ^0.0.4
-  flutter_cache_manager: ^3.4.1
-  image_picker: ^1.1.2
+  
+  #permission
   permission_handler: ^11.3.1
+  
+  #wallpaper
+  flutter_wallpaper_manager: ^0.0.4
+  image_picker: ^1.1.2
   device_info_plus: ^10.1.2
 
   
