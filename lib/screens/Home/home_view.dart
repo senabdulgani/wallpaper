@@ -20,8 +20,6 @@ class HomeView extends StatelessWidget {
               const Gap(12),
               sectionHeaderText(text: 'My Cases'),
               const PhotoSlider(),
-              sectionHeaderText(text: 'Community'),
-              const PhotoSlider(),
             ],
           ),
         ),

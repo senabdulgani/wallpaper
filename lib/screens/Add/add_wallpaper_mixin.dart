@@ -106,7 +106,7 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
         // Navigate to the DisplayImageScreen
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => DisplayImageScreen(
+            builder: (context) => DisplayImageView(
               temporaryImagePath: temporaryPhotoPath,
             ),
           ),

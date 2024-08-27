@@ -1,36 +1,23 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:gap/gap.dart';
+import 'package:wallpaper_app/product/components/set_wallpaper_button.dart';
 import 'package:wallpaper_app/product/theme/app_colors.dart';
-import 'package:wallpaper_app/screens/Home/home_view.dart';
 import 'package:wallpaper_app/screens/navbar_and_pages_view.dart.dart';
 
 // ignore: must_be_immutable
-class DisplayImageScreen extends StatefulWidget {
+class DisplayImageView extends StatefulWidget {
   late String temporaryImagePath;
-  DisplayImageScreen({
+  DisplayImageView({
     super.key,
     required this.temporaryImagePath,
   });
 
   @override
-  State<DisplayImageScreen> createState() => _DisplayImageScreenState();
+  State<DisplayImageView> createState() => _DisplayImageViewState();
 }
 
-class _DisplayImageScreenState extends State<DisplayImageScreen> {
-  String home = "Home Screen";
-  String lock = "Lock Screen";
-  String both = "Both Screen";
-  String system = "System";
-
-  late Stream<String> progressString;
-
-  // late String res;
-  bool isLoading = false;
-
-  var result = "Waiting to set wallpaper";
-
+class _DisplayImageViewState extends State<DisplayImageView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -63,43 +50,7 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
               ),
             ),
             const Gap(5),
-            isLoading
-                ? const CircularProgressIndicator()
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: <Widget>[
-                      FloatingActionButton(
-                        heroTag: 'home',
-                        onPressed: () async {
-                          try {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            await WallpaperManager.setWallpaperFromFile(
-                              widget.temporaryImagePath,
-                              WallpaperManager.LOCK_SCREEN,
-                            );
-
-                            setState(() {
-                              isLoading = false;
-                            });
-                          } catch (exception) {
-                            // Scaffold Message
-                            // ignore: use_build_context_synchronously
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('There is an error while setting wallpaper.'),
-                              ),
-                            );
-                          }
-                        },
-                        child: const Icon(
-                          Icons.lock,
-                          color: AppColors.black,
-                        ),
-                      ),
-                    ],
-                  ),
+            SetWallpaperButton(path: widget.temporaryImagePath),
           ],
         ),
       ),
