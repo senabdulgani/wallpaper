@@ -1,6 +1,8 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
+import 'package:provider/provider.dart';
+import 'package:wallpaper_app/product/state/add_image_provider.dart';
 import 'package:wallpaper_app/product/theme/app_colors.dart';
 import 'package:wallpaper_app/screens/Add/add_wallpaper_mixin.dart';
 
@@ -82,6 +84,32 @@ class _AddWallpaperViewState extends State<AddWallpaperView> with AddWallpaperMi
                       ),
                     ),
                   ),
+                if (selectedImagePath != null) ...[
+                  Positioned(
+                    // TODO: Adjust according to user device.
+                    top: 20,
+                    right: 20,
+                    child: GestureDetector(
+                      onTap: () {
+                        // remove device file wallpaper
+                        Provider.of<WallpaperProvider>(context, listen: false).removeWallpaper();
+                        selectedImagePath = null;
+                        setState(() {});
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(4),
+                        decoration: const BoxDecoration(
+                          color: AppColors.transparantBlack,
+                          shape: BoxShape.circle,
+                        ),
+                        child: const Icon(
+                          Icons.close,
+                          size: 32,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
                 if (selectedImagePath == null) ...[
                   movementArrows(),
                 ]
