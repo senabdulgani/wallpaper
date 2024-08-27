@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:gap/gap.dart';
 import 'package:wallpaper_app/product/theme/app_colors.dart';
+import 'package:wallpaper_app/screens/Home/home_view.dart';
+import 'package:wallpaper_app/screens/navbar_and_pages_view.dart.dart';
 
 // ignore: must_be_immutable
 class DisplayImageScreen extends StatefulWidget {
@@ -34,6 +36,21 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Set Wallpaper'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.check),
+            onPressed: () {
+              // Go to home screen with push
+              Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const NavBarAndPagesView(),
+                ),
+                (route) => false,
+              );
+            },
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         child: Column(
@@ -58,47 +75,11 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
                             setState(() {
                               isLoading = true;
                             });
-                            int location = WallpaperManager.HOME_SCREEN;
-                            await WallpaperManager.setWallpaperFromFile(widget.temporaryImagePath, location);
-                            setState(() {
-                              isLoading = false;
-                            });
-                          } catch (exception) {
-                            // Scaffold Message
-                            // ignore: use_build_context_synchronously
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: const Text('Bu bir Snackbar mesajıdır!'),
-                                action: SnackBarAction(
-                                  label: 'Geri Al',
-                                  onPressed: () {
-                                    // Snackbar eylem tıklandığında yapılacaklar
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      const SnackBar(content: Text('Geri alma işlemi yapıldı.')),
-                                    );
-                                  },
-                                ),
-                              ),
-                            );
-                          }
-                        },
-                        child: const Icon(
-                          Icons.home,
-                          color: AppColors.black,
-                        ),
-                      ),
-                      FloatingActionButton(
-                        heroTag: 'lock',
-                        onPressed: () async {
-                          try {
-                            setState(() {
-                              isLoading = true;
-                            });
-                            int location = WallpaperManager.LOCK_SCREEN;
                             await WallpaperManager.setWallpaperFromFile(
                               widget.temporaryImagePath,
-                              location,
+                              WallpaperManager.LOCK_SCREEN,
                             );
+
                             setState(() {
                               isLoading = false;
                             });
@@ -107,7 +88,7 @@ class _DisplayImageScreenState extends State<DisplayImageScreen> {
                             // ignore: use_build_context_synchronously
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('There is an error!'),
+                                content: Text('There is an error while setting wallpaper.'),
                               ),
                             );
                           }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:wallpaper_app/screens/Add/add_wallpaper_view.dart';
 import 'package:wallpaper_app/screens/Home/home_view.dart';
-import 'package:wallpaper_app/screens/Settings/settings_view.dart';
 
 class NavBarAndPagesView extends StatefulWidget {
   const NavBarAndPagesView({super.key});
@@ -16,7 +15,6 @@ class NavBarAndPagesViewState extends State<NavBarAndPagesView> {
   final List<Widget> screens = [
     const AddWallpaperView(),
     const HomeView(),
-    const SettingsView(),
   ];
 
   @override
@@ -49,10 +47,6 @@ class NavBarAndPagesViewState extends State<NavBarAndPagesView> {
           BottomNavigationBarItem(
             icon: indexProvider == 1 ? const Icon(Icons.home) : const Icon(Icons.home_outlined),
             label: 'Home',
-          ),
-          const BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            label: 'Settings',
           ),
         ],
       ),

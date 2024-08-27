@@ -17,8 +17,6 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
   final TextEditingController reminderTextController = TextEditingController();
   String reminderText = '';
 
-  bool hasText = false;
-
   int selectedImageIndex = 2;
 
   List<String> images = [
@@ -35,7 +33,7 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
   String temporaryPhotoPath = '';
   String? selectedImagePath;
 
-  double fontSize = 32;
+  double fontSize = 90;
 
   bool isLoading = false;
 
@@ -65,31 +63,12 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
     );
   }
 
-  Row checkBox() {
-    return Row(
-      children: [
-        Checkbox(
-          value: hasText,
-          onChanged: (value) {
-            setState(() {
-              hasText = value!;
-            });
-          },
-        ),
-        const Text(
-          'Add text to your wallpaper',
-          style: TextStyle(fontSize: 24),
-        ),
-      ],
-    );
-  }
-
   Slider textSizeSlider() {
     return Slider(
       value: fontSize,
       min: 0,
-      max: 120,
-      divisions: 120,
+      max: 400,
+      divisions: 360,
       onChanged: (double value) {
         setState(() {
           fontSize = value;
@@ -119,32 +98,22 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
         setState(() {
           isLoading = true;
         });
-        if (hasText) {
-          temporaryPhotoPath = await createImageWithText(
-            selectedImagePath ?? images[selectedImageIndex],
-            reminderTextController.text,
-          );
+        temporaryPhotoPath = await createImageWithText(
+          selectedImagePath ?? images[selectedImageIndex],
+          reminderTextController.text,
+        );
 
-          // Navigate to the DisplayImageScreen
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => DisplayImageScreen(
-                temporaryImagePath: temporaryPhotoPath,
-              ),
+        // Navigate to the DisplayImageScreen
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => DisplayImageScreen(
+              temporaryImagePath: temporaryPhotoPath,
             ),
-          );
+          ),
+        );
 
-          // Save the photo to the documents directory
-          await saveNewWallpaper(temporaryPhotoPath);
-        } else {
-          Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (context) => DisplayImageScreen(
-                temporaryImagePath: images[selectedImageIndex],
-              ),
-            ),
-          );
-        }
+        // Save the photo to the documents directory
+        await saveNewWallpaper(temporaryPhotoPath);
 
         setState(() {
           isLoading = false;

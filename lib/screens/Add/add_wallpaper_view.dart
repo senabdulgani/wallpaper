@@ -18,7 +18,7 @@ class _AddWallpaperViewState extends State<AddWallpaperView> with AddWallpaperMi
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Re-Design'),
+        title: const Text('Design'),
         actions: [
           !isLoading ? exportButton(context) : const CircularProgressIndicator(),
         ],
@@ -28,26 +28,44 @@ class _AddWallpaperViewState extends State<AddWallpaperView> with AddWallpaperMi
         physics: const BouncingScrollPhysics(),
         child: Column(
           children: [
-            textSizeSlider(),
-            checkBox(),
-            const Gap(20),
-            if (hasText) ...[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: TextField(
-                  controller: reminderTextController,
-                  decoration: const InputDecoration(
-                    labelText: 'What do you want to remind you about?',
+            Padding(
+              padding: const EdgeInsets.symmetric(vertical: 12.0),
+              child: Column(
+                children: [
+                  const Row(
+                    children: [
+                      Gap(12),
+                      Text(
+                        'Adjust the font size as you wish.',
+                        style: TextStyle(color: AppColors.grey),
+                      ),
+                      Spacer(),
+                    ],
                   ),
-                  onChanged: (value) {
-                    // reminderText is value
-                    reminderText = value;
-                    setState(() {});
-                  },
-                ),
+                  const Gap(12),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
+                    child: textSizeSlider(),
+                  ),
+                ],
               ),
-              const Gap(20),
-            ],
+            ),
+            const Gap(12),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: TextField(
+                controller: reminderTextController,
+                decoration: const InputDecoration(
+                  labelText: 'What do you want to remind you about?',
+                ),
+                onChanged: (value) {
+                  // reminderText is value
+                  reminderText = value;
+                  setState(() {});
+                },
+              ),
+            ),
+            const Gap(20),
             Stack(
               children: [
                 SizedBox(
@@ -65,25 +83,24 @@ class _AddWallpaperViewState extends State<AddWallpaperView> with AddWallpaperMi
                           ),
                   ),
                 ),
-                if (hasText)
-                  Positioned.fill(
-                    child: Align(
-                      alignment: Alignment.center,
-                      child: Container(
-                        color: AppColors.grey,
-                        child: Text(
-                          reminderTextController.text,
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: (fontSize ~/ 5).toDouble(),
-                            //TODO: Synchronize preview with reality.
-                            fontWeight: FontWeight.bold,
-                          ),
-                          textAlign: TextAlign.center,
+                Positioned.fill(
+                  child: Align(
+                    alignment: Alignment.center,
+                    child: Container(
+                      color: AppColors.grey,
+                      child: Text(
+                        reminderTextController.text,
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: (fontSize ~/ 5).toDouble(),
+                          //TODO: Synchronize preview with reality.
+                          fontWeight: FontWeight.bold,
                         ),
+                        textAlign: TextAlign.center,
                       ),
                     ),
                   ),
+                ),
                 if (selectedImagePath != null) ...[
                   Positioned(
                     // TODO: Adjust according to user device.

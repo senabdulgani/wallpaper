@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:wallpaper_app/product/state/add_image_provider.dart';
+import 'package:wallpaper_app/product/state/wallpaper_manager_provider.dart';
 import 'package:wallpaper_app/product/state/theme_provider.dart';
 import 'package:wallpaper_app/product/theme/app_colors.dart';
 import 'package:wallpaper_app/screens/navbar_and_pages_view.dart.dart';
@@ -16,6 +17,7 @@ void main() async {
       providers: [
         ChangeNotifierProvider(create: (context) => ThemeProvider(prefs)),
         ChangeNotifierProvider(create: (context) => WallpaperProvider()),
+        ChangeNotifierProvider(create: (context) => WallpaperManagerProvider()),
       ],
       // child: const MaterialApp(home: MyApp()),
       child: const MainApp(),
