@@ -3,12 +3,11 @@ import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:gap/gap.dart';
 import 'package:http/http.dart' as http;
-import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:wallpaper_app/core/helper.dart';
 import 'package:wallpaper_app/product/state/add_image_provider.dart';
 import 'package:wallpaper_app/product/theme/app_colors.dart';
 import 'package:wallpaper_app/screens/Add/DisplayImage/exported_image_view.dart';
@@ -94,6 +93,7 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
       onChanged: (double value) {
         setState(() {
           fontSize = value;
+          debugPrint('$fontSize');
         });
       },
     );
@@ -115,6 +115,7 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
   GestureDetector exportButton(BuildContext context) {
     return GestureDetector(
       onTap: () async {
+        if (isLoading) return;
         setState(() {
           isLoading = true;
         });
@@ -164,7 +165,7 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
   }
 
   Future<void> _pickImage(BuildContext context) async {
-    if (!await accessRequest()) return;
+    if (!await Helper().accessRequest()) return;
     final picker = ImagePicker();
 
     final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -179,41 +180,6 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
       // ignore: use_build_context_synchronously
       Provider.of<WallpaperProvider>(context, listen: false).addWallpaper(image);
     }
-  }
-
-  Future<bool> accessRequest() async {
-    final DeviceInfoPlugin deviceInfoPlugin = DeviceInfoPlugin();
-    AndroidDeviceInfo androidDeviceInfo = await deviceInfoPlugin.androidInfo;
-    if (androidDeviceInfo.version.sdkInt >= 33) {
-      await Permission.photos.request();
-      if (await Permission.photos.isGranted == false) {
-        debugPrint('I would be pop dialog for alert message.');
-        return false;
-      }
-
-      if (await Permission.photos.isGranted == false) {
-        if (await Permission.photos.isPermanentlyDenied) {
-          openAppSettings();
-          return false;
-        } else if (!await Permission.photos.isGranted) {
-          return false;
-        }
-      }
-    } else {
-      await Permission.storage.request();
-
-      if (await Permission.storage.isGranted == false) {
-        if (await Permission.storage.isPermanentlyDenied) {
-          openAppSettings();
-
-          return false;
-        } else if (!await Permission.storage.isGranted) {
-          return false;
-        }
-      }
-    }
-
-    return true;
   }
 
   Future<String> createImageWithText(String imagePath, String text) async {
