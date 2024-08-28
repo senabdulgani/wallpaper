@@ -2,6 +2,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:walltext/product/components/set_wallpaper_button.dart';
 import 'package:walltext/product/state/wallpaper_manager_provider.dart';
 
@@ -27,6 +28,12 @@ class WallpaperDetails extends StatelessWidget {
               // Remove the wallpaper and navigate back
               wallpaperManagerProvider.removeWallpaper(index);
               Navigator.pop(context);
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.share),
+            onPressed: () {
+              Share.shareXFiles([XFile(savedPhotos[index].path)]);
             },
           ),
         ],
