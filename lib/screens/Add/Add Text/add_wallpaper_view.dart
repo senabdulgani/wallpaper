@@ -56,7 +56,7 @@ class _AddWallpaperViewState extends State<AddWallpaperView> with AddWallpaperMi
               child: TextField(
                 controller: reminderTextController,
                 decoration: const InputDecoration(
-                  labelText: 'What do you want to remind you about?',
+                  labelText: 'Write Something',
                 ),
                 onChanged: (value) {
                   // reminderText is value

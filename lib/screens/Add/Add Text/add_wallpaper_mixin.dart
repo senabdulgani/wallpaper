@@ -158,6 +158,8 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
 
       // ignore: use_build_context_synchronously
       Provider.of<WallpaperProvider>(context, listen: false).addWallpaper(image);
+
+      getImageWidth(pickedFile.path);
     }
   }
 
@@ -179,8 +181,7 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
     imageWidth = image.width;
     debugPrint('${image.width}');
 
-    final double screenWidth = MediaQuery.of(context).size.width;
-    previewRatio = imageWidth / (screenWidth - 16);
+    previewRatio = imageWidth / (MediaQuery.of(context).size.width - 16);
   }
 
   Future<String> createImageWithText(String imagePath, String text) async {
