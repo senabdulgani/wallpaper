@@ -44,7 +44,7 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Facelog',
+      title: 'Walltext',
       theme: AppColors().appTheme,
       darkTheme: AppColors().appTheme,
       themeMode: context.watch<ThemeProvider>().themeMode,
