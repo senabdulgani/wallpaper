@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:wallpaper_app/product/state/wallpaper_manager_provider.dart';
-import 'package:wallpaper_app/product/theme/app_colors.dart';
-import 'package:wallpaper_app/screens/Details/wallpaper_details.dart';
+import 'package:walltext/product/state/wallpaper_manager_provider.dart';
+import 'package:walltext/product/theme/app_colors.dart';
+import 'package:walltext/screens/Details/wallpaper_details.dart';
 
 class PhotoSlider extends StatefulWidget {
   const PhotoSlider({super.key});

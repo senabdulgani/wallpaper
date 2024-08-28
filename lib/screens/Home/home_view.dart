@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:wallpaper_app/screens/Home/Slider/photo_slider.dart';
+import 'package:walltext/screens/Home/Slider/photo_slider.dart';
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});

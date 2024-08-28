@@ -7,11 +7,11 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
-import 'package:wallpaper_app/core/helper.dart';
-import 'package:wallpaper_app/product/state/add_image_provider.dart';
-import 'package:wallpaper_app/product/theme/app_colors.dart';
-import 'package:wallpaper_app/screens/Add/Result/exported_image_view.dart';
-import 'package:wallpaper_app/screens/Add/Add%20Text/add_wallpaper_view.dart';
+import 'package:walltext/core/helper.dart';
+import 'package:walltext/product/state/add_image_provider.dart';
+import 'package:walltext/product/theme/app_colors.dart';
+import 'package:walltext/screens/Add/Result/exported_image_view.dart';
+import 'package:walltext/screens/Add/Add%20Text/add_wallpaper_view.dart';
 
 mixin AddWallpaperMixin on State<AddWallpaperView> {
   final TextEditingController reminderTextController = TextEditingController();

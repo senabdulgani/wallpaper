@@ -1,9 +1,9 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
-import 'package:wallpaper_app/product/components/set_wallpaper_button.dart';
-import 'package:wallpaper_app/product/theme/app_colors.dart';
-import 'package:wallpaper_app/screens/navbar_and_pages_view.dart.dart';
+import 'package:walltext/product/components/set_wallpaper_button.dart';
+import 'package:walltext/product/theme/app_colors.dart';
+import 'package:walltext/screens/navbar_and_pages_view.dart.dart';
 
 // ignore: must_be_immutable
 class DisplayImageView extends StatefulWidget {

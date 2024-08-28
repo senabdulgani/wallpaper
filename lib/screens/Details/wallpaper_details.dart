@@ -2,8 +2,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
-import 'package:wallpaper_app/product/components/set_wallpaper_button.dart';
-import 'package:wallpaper_app/product/state/wallpaper_manager_provider.dart';
+import 'package:walltext/product/components/set_wallpaper_button.dart';
+import 'package:walltext/product/state/wallpaper_manager_provider.dart';
 
 class WallpaperDetails extends StatelessWidget {
   final int index;

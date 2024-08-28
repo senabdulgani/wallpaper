@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wallpaper_app/product/state/add_image_provider.dart';
-import 'package:wallpaper_app/product/state/wallpaper_manager_provider.dart';
-import 'package:wallpaper_app/product/state/theme_provider.dart';
-import 'package:wallpaper_app/product/theme/app_colors.dart';
-import 'package:wallpaper_app/screens/navbar_and_pages_view.dart.dart';
+import 'package:walltext/product/state/add_image_provider.dart';
+import 'package:walltext/product/state/wallpaper_manager_provider.dart';
+import 'package:walltext/product/state/theme_provider.dart';
+import 'package:walltext/product/theme/app_colors.dart';
+import 'package:walltext/screens/navbar_and_pages_view.dart.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_wallpaper_manager/flutter_wallpaper_manager.dart';
 import 'package:gap/gap.dart';
-import 'package:wallpaper_app/product/theme/app_colors.dart';
+import 'package:walltext/product/theme/app_colors.dart';
 
 class SetWallpaperButton extends StatefulWidget {
   final String path;

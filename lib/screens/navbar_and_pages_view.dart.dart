@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:wallpaper_app/screens/Add/Add%20Text/add_wallpaper_view.dart';
-import 'package:wallpaper_app/screens/Home/home_view.dart';
+import 'package:walltext/screens/Add/Add%20Text/add_wallpaper_view.dart';
+import 'package:walltext/screens/Home/home_view.dart';
 
 class NavBarAndPagesView extends StatefulWidget {
   const NavBarAndPagesView({super.key});

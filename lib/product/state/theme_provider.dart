@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:wallpaper_app/product/theme/app_colors.dart';
+import 'package:walltext/product/theme/app_colors.dart';
 
 class ThemeProvider extends ChangeNotifier {
   final SharedPreferences _prefs;

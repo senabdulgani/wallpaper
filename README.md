@@ -1,3 +1,3 @@
-# wallpaper_app
+# walltext
 
 A new Flutter project.

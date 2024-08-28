@@ -1,4 +1,4 @@
-name: wallpaper_app
+name: walltext
 description: "A new Flutter project."
 publish_to: 'none'
 version: 0.1.0
@@ -44,9 +44,9 @@ dev_dependencies:
 # Splash Screen Settings
 flutter_native_splash:
   color: "#737373" # Arka plan rengi
-  image: assets/icon/playstore.png # Splash görüntüsü
+  image: assets/icon/wall_text_ic.png # Splash görüntüsü
   android_12:
-    image: assets/icon/playstore.png # Android 12+ için splash görüntüsü
+    image: assets/icon/wall_text_ic.png # Android 12+ için splash görüntüsü
     color: "#737373" # Arka plan rengi
 
     
