@@ -33,9 +33,17 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
   String temporaryPhotoPath = '';
   String? selectedImagePath;
 
-  double fontSize = 90;
+  double fontSize = 30;
 
   bool isLoading = false;
+  late int imageWidth;
+  late double previewRatio;
+
+  @override
+  void initState() {
+    super.initState();
+    getImageWidth(images[selectedImageIndex]);
+  }
 
   Positioned movementArrows() {
     return Positioned(
@@ -48,6 +56,7 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
             onPressed: () {
               selectedImageIndex = (selectedImageIndex - 1 + images.length) % images.length;
               setState(() {});
+              getImageWidth(images[selectedImageIndex]);
             },
           ),
           const Gap(16),
@@ -56,6 +65,7 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
             onPressed: () {
               selectedImageIndex = (selectedImageIndex + 1) % images.length;
               setState(() {});
+              getImageWidth(images[selectedImageIndex]);
             },
           ),
         ],
@@ -67,8 +77,8 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
     return Slider(
       value: fontSize,
       min: 0,
-      max: 400,
-      divisions: 360,
+      max: 120,
+      divisions: 120,
       onChanged: (double value) {
         setState(() {
           fontSize = value;
@@ -151,6 +161,28 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
     }
   }
 
+  Future<void> getImageWidth(String imagePath) async {
+    Uint8List bytes;
+
+    if (selectedImagePath == null) {
+      final response = await http.get(Uri.parse(imagePath));
+      bytes = response.bodyBytes;
+    } else {
+      final file = File(imagePath);
+      bytes = await file.readAsBytes();
+    }
+
+    final codec = await ui.instantiateImageCodec(bytes);
+    final frameInfo = await codec.getNextFrame();
+    final image = frameInfo.image;
+
+    imageWidth = image.width;
+    debugPrint('${image.width}');
+
+    final double screenWidth = MediaQuery.of(context).size.width;
+    previewRatio = imageWidth / (screenWidth - 16);
+  }
+
   Future<String> createImageWithText(String imagePath, String text) async {
     // Load image data
     Uint8List bytes;
@@ -182,7 +214,7 @@ mixin AddWallpaperMixin on State<AddWallpaperView> {
         text: text,
         style: TextStyle(
           color: Colors.white,
-          fontSize: fontSize,
+          fontSize: fontSize * previewRatio,
           fontWeight: FontWeight.bold,
         ),
       ),

@@ -19,7 +19,6 @@ void main() async {
         ChangeNotifierProvider(create: (context) => WallpaperProvider()),
         ChangeNotifierProvider(create: (context) => WallpaperManagerProvider()),
       ],
-      // child: const MaterialApp(home: MyApp()),
       child: const MainApp(),
     ),
   );

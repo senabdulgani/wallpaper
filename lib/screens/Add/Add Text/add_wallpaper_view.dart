@@ -92,7 +92,7 @@ class _AddWallpaperViewState extends State<AddWallpaperView> with AddWallpaperMi
                         reminderTextController.text,
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: (fontSize ~/ 5).toDouble(),
+                          fontSize: fontSize,
                           //TODO: Synchronize preview with reality.
                           fontWeight: FontWeight.bold,
                         ),
