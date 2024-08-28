@@ -4,7 +4,7 @@ import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
 import 'package:wallpaper_app/product/state/add_image_provider.dart';
 import 'package:wallpaper_app/product/theme/app_colors.dart';
-import 'package:wallpaper_app/screens/Add/add_wallpaper_mixin.dart';
+import 'package:wallpaper_app/screens/Add/Add%20Text/add_wallpaper_mixin.dart';
 
 class AddWallpaperView extends StatefulWidget {
   const AddWallpaperView({super.key});

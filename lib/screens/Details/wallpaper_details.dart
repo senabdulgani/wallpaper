@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:gap/gap.dart';
 import 'package:provider/provider.dart';
@@ -38,16 +37,16 @@ class WallpaperDetails extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 16.0),
               child: ClipRRect(
-                borderRadius: BorderRadius.circular(16.0), // Apply border radius
+                borderRadius: BorderRadius.circular(16.0),
                 child: Image.file(
                   savedPhotos[index],
-                  fit: BoxFit.cover, // Maintain aspect ratio
+                  fit: BoxFit.cover,
                   width: MediaQuery.of(context).size.width,
                 ),
               ),
             ),
             SetWallpaperButton(path: savedPhotos[index].path),
-            const Gap(20)
+            const Gap(20),
           ],
         ),
       ),

@@ -10,8 +10,8 @@ import 'package:provider/provider.dart';
 import 'package:wallpaper_app/core/helper.dart';
 import 'package:wallpaper_app/product/state/add_image_provider.dart';
 import 'package:wallpaper_app/product/theme/app_colors.dart';
-import 'package:wallpaper_app/screens/Add/DisplayImage/exported_image_view.dart';
-import 'package:wallpaper_app/screens/Add/add_wallpaper_view.dart';
+import 'package:wallpaper_app/screens/Add/Result/exported_image_view.dart';
+import 'package:wallpaper_app/screens/Add/Add%20Text/add_wallpaper_view.dart';
 
 mixin AddWallpaperMixin on State<AddWallpaperView> {
   final TextEditingController reminderTextController = TextEditingController();
